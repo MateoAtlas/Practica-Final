@@ -1,7 +1,10 @@
 <template>
     <lightning-card title="Cars">
         <div class="slds-card__body slds-card__body_inner">
-            <template if:true={cars.data}>
+            <div class="loadData">
+                <lightning-button label="Cargar datos" class="searchDataButton" onclick={loadData}></lightning-button>
+            </div>
+            <template if:true={cars}>
                 <lightning-input type="search"
                     onchange={buscarCoche}
                     variant="label-hidden"
@@ -10,33 +13,48 @@
                     placeholder="Buscador de coches"
                     value={searchTerm}>
                 </lightning-input>
+
+                <lightning-input type="date" 
+                name="stDt" label="Fecha salida" id="salida" onchange={fechaSalidaChage} value={fechaSalida}>
+                </lightning-input>
+
+                <lightning-input type="date" 
+                name="stDt" label="Fecha entrega" id="entrega" onchange={fechaEntregaChange} value={fechaEntrega}>
+                </lightning-input>
+
+                <div class="buttons">
+                    <lightning-button label="Buscar" onclick={searchCars}></lightning-button>
+                    <lightning-button label="Borrar filtro" onclick={deleteFilter}></lightning-button>
+                </div>
                 <!-- Cards de los coches -->
-				<lightning-layout multiple-rows="true" pull-to-boundary="small">
-					<template for:each={cars.data} for:item="car">
-						<lightning-layout-item key={car.Id} size="3" class="slds-var-p-around_x-small">
-                            <!-- Aquí directamente mostramos los datos del coche -->
-                            <lightning-card title={car.Name}>
-                                <div class="slds-card__body slds-card__body_inner">
-                                    <p><strong>Id:</strong> {car.Id}</p>
-                                    <p><strong>Marca:</strong> {car.Marca__c}</p>
-                                    <p><strong>Precio por Día:</strong> {car.PrecioDia__c}</p>
-                                    <p><strong>Kilómetros:</strong> {car.Kilometros__c}</p>
-                                    <p><strong>Modelo:</strong> {car.Modelo_coche__c}</p>
+				<div class="carsMain" id="carsMainElement">
+                    <lightning-layout multiple-rows="true" pull-to-boundary="small">
+                        <template for:each={cars} for:item="car">
+                            <lightning-layout-item key={car.Id} size="3" class="slds-var-p-around_x-small">
+                                <!-- Aquí directamente mostramos los datos del coche -->
+                                <div class="carslist">
+                                    <lightning-card title={car.Name}>
+                                        <div class="slds-card__body slds-card__body_inner">
+                                            <p><strong>Id:</strong> {car.Id}</p>
+                                            <p><strong>Marca:</strong> {car.Marca__c}</p>
+                                            <p><strong>Precio por Día:</strong> {car.PrecioDia__c}</p>
+                                            <p><strong>Kilómetros:</strong> {car.Kilometros__c}</p>
+                                            <p><strong>Modelo:</strong> {car.Modelo_coche__c}</p>
+                                            <img src={car.logoUrl} alt="Logo Marca" style="max-height: 50px; max-width: 100px;" class="logo"/>
+            
+                                            <lightning-button label="Agregar coche" onclick={agregar} data-id={car.Id}></lightning-button>
+                                        </div>
+                                    </lightning-card>
                                 </div>
-                            </lightning-card>
-						</lightning-layout-item>
-					</template>
-				</lightning-layout>
-                <template if:false={resultados}>
+                            </lightning-layout-item>
+                        </template>
+                    </lightning-layout>
+                </div>
+                <template if:false={cars}>
                     <div class="slds-align_absolute-center slds-var-m-vertical_small">
                         No hay coches disponibles...
                     </div>
                 </template>
-            </template>
-            <template if:true={cars.error}>
-                <div class="slds-text-color_error">
-                    Ha ocurrido un error inesperado, pruebe más tarde.
-                </div>
             </template>
         </div>
     </lightning-card>
