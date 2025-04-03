@@ -32,7 +32,7 @@ export default class Buscador extends NavigationMixin(LightningElement) {
     // }
 
 
-    loadData (e) {
+    connectedCallback (e) {
         console.log(this.recordId);
         getOpp ({IdOpp: this.recordId})
             .then(result => {

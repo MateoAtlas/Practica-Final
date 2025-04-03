@@ -4,32 +4,32 @@
     <body>
         <!-- HEADER: Company Info -->
         <div style="min-height: 1in;">
-            <table class="header-table">
+            <table class="header-table" style="width: 100%;">
                 <tr>
-                    <td colspan="2" style=" text-align: center;">
+                    <td colspan="2" style=" text-align: center; ">
                         <h1>Atlas Car {!Concesionario.Name} </h1>
                     </td>
                 </tr>
                 <tr>
-                    <td style="width: 75%">
-                        <apex:image width="2.75in" url="{!$Resource.PruebaLogo}" />
+                    <td style="width: 55%; text-align: center;">
+                        <apex:image width="1.45in" url="{!$Resource.Logo2}" style="padding: 50px;" />
                     </td>
-                    <td>
-                        <table style="width: 2.8in; border: solid 1px black; border-collapse: separate;">
+                    <td style="text-align: center; ">
+                        <table style="width:100%; border-collapse: collapse;">
                             <tr>
-                                <td style="text-align: center; font-size: 16pt; font-weight: bold; border-bottom: solid 1px black" colspan="2">
+                                <td style="text-align: center; font-size: 16pt; font-weight: bold; border: solid 1px black" colspan="2">
                                     Presupuesto de Oportunidad
                                 </td>
                             </tr>
                             <tr>
-                                <td>Fecha:</td>
-                                <td style="text-align:right;"> 
+                                <td style="text-align:left; border-bottom: 1px solid;">Fecha:</td>
+                                <td style="text-align:left; border-bottom: 1px solid;"> 
                                     {!DAY(TODAY())}-{!MONTH(TODAY())}-{!YEAR(TODAY())}
                                 </td>
                             </tr>
                             <tr>
-                                <td>Oportunidad:</td>
-                                <td style="text-align:right;">{!Opportunity.Name}</td>
+                                <td style="text-align:left; border-bottom: 1px solid;">Oportunidad:</td>
+                                <td style="text-align:left; border-bottom: 1px solid;">{!Opportunity.Name}</td>
                             </tr>
                         </table>
                     </td>

@@ -1,9 +1,6 @@
 <template>
     <lightning-card title="Cars">
         <div class="slds-card__body slds-card__body_inner">
-            <div class="loadData">
-                <lightning-button label="Cargar datos" class="searchDataButton" onclick={loadData}></lightning-button>
-            </div>
             <template if:true={cars}>
                 <lightning-input type="search"
                     onchange={buscarCoche}
