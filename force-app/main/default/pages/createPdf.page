@@ -1,0 +1,7 @@
+<apex:page renderAs="pdf" controller="pdfController">
+    <h1>Detalles de la Oportunidad: {!opp.Name}</h1>
+    <p><strong>Cuenta:</strong> {!opp.Account.Name}</p>
+    <p><strong>Fecha de Cierre:</strong> {!opp.CloseDate}</p>
+    <p><strong>Etapa:</strong> {!opp.StageName}</p>
+    <p><strong>Monto:</strong> {!opp.Amount}</p>
+</apex:page>

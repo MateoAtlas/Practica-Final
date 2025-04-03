@@ -36,7 +36,7 @@ public with sharing class BuscadorController {
     }
 
     @AuraEnabled(cacheable=true scope='global')
-    public static void agregarCoche (String idCoche, String idConce, String idOpp, Date fechaEntrega, Date fechaSalida) {        
+    public static List<Terminos_de_uso__c> agregarCoche (String idCoche, String idConce, String idOpp, Date fechaEntrega, Date fechaSalida) {        
         Vehiculo__c vehiculo = [SELECT Name FROM Vehiculo__c WHERE Id = :idCoche LIMIT 1];
 
         System.debug('Vehiculo Name: ' + vehiculo.Name);
@@ -53,12 +53,8 @@ public with sharing class BuscadorController {
         );
         newTerms.add(newTermino);
         
-        try {
             System.debug('Entrando');
-            insert newTerms;
-        } catch (DmlException e) {
-            System.debug('Error: ' + e.getMessage());
-        }
+            return newTerms;
     }
 
     @AuraEnabled(cacheable=true scope='global')

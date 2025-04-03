@@ -48,16 +48,13 @@ export default class Buscador extends NavigationMixin(LightningElement) {
         buscarCoches({searchTerm: this.searchTerm, IdConce: this.concesionarioId})
         .then(result => {
             if (result && result.length > 0) {
-                // Procesar cada coche en el resultado
                 this.cars = result.map(car => {
-                    // Extraer el src de Logo_marca__c usando una expresión regular
                     const logoMatch = car.Logo_marca__c.match(/src="([^"]+)"/);
-                    const logoUrl = logoMatch ? logoMatch[1] : ''; // Si hay un src, lo obtenemos, si no, se deja vacío
+                    const logoUrl = logoMatch ? logoMatch[1] : '';
     
-                    // Crear un nuevo objeto con los campos del coche y la nueva URL del logo
                     return {
                         ...car,
-                        logoUrl: logoUrl // Añadir el campo logoUrl al objeto del coche
+                        logoUrl: logoUrl
                     };
                 });
                 console.log('Cargue');
@@ -102,7 +99,9 @@ export default class Buscador extends NavigationMixin(LightningElement) {
     agregar (event) {
         let idNewCar = event.target.dataset.id;
         console.log(idNewCar);
-        agregarCoches({ idCoche: idNewCar, idConce: this.concesionarioId, idOpp: this.recordId, fechaEntrega: this.fechaEntrega, fechaSalida: this.fechaSalida})
+        agregarCoches({ 
+            idCoche: idNewCar, idConce: this.concesionarioId, idOpp: this.recordId, 
+            fechaEntrega: this.fechaEntrega, fechaSalida: this.fechaSalida})
             .then (result => {
                 console.log('Resultado ', result);
             })
@@ -126,16 +125,13 @@ export default class Buscador extends NavigationMixin(LightningElement) {
             buscarCocheFiltrado({ fechaSalida: this.fechaSalida, fechaEntrega: this.fechaEntrega, conceId:  this.concesionarioId})
                 .then(result => {
                     if (result && result.length > 0) {
-                        // Procesar cada coche en el resultado
                         this.cars = result.map(car => {
-                            // Extraer el src de Logo_marca__c usando una expresión regular
                             const logoMatch = car.Logo_marca__c.match(/src="([^"]+)"/);
-                            const logoUrl = logoMatch ? logoMatch[1] : ''; // Si hay un src, lo obtenemos, si no, se deja vacío
+                            const logoUrl = logoMatch ? logoMatch[1] : '';
             
-                            // Crear un nuevo objeto con los campos del coche y la nueva URL del logo
                             return {
                                 ...car,
-                                logoUrl: logoUrl // Añadir el campo logoUrl al objeto del coche
+                                logoUrl: logoUrl
                             };
                         });
                         console.log('Cargue');

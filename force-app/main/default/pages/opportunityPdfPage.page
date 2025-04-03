@@ -1,0 +1,123 @@
+<apex:page controller="opportunityPdfController" renderAs="pdf">
+    <apex:param name="recordId" value="{!$CurrentPage.parameters.recordId}" />
+    
+    <body>
+        <!-- HEADER: Company Info -->
+        <div style="min-height: 1in;">
+            <table class="header-table">
+                <tr>
+                    <td colspan="2" style=" text-align: center;">
+                        <h1>Atlas Car {!Concesionario.Name} </h1>
+                    </td>
+                </tr>
+                <tr>
+                    <td style="width: 75%">
+                        <apex:image width="2.75in" url="{!$Resource.PruebaLogo}" />
+                    </td>
+                    <td>
+                        <table style="width: 2.8in; border: solid 1px black; border-collapse: separate;">
+                            <tr>
+                                <td style="text-align: center; font-size: 16pt; font-weight: bold; border-bottom: solid 1px black" colspan="2">
+                                    Presupuesto de Oportunidad
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>Fecha:</td>
+                                <td style="text-align:right;"> 
+                                    {!DAY(TODAY())}-{!MONTH(TODAY())}-{!YEAR(TODAY())}
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>Oportunidad:</td>
+                                <td style="text-align:right;">{!Opportunity.Name}</td>
+                            </tr>
+                        </table>
+                    </td>
+                </tr>
+            </table>
+        </div>
+
+        <!-- SECTION: Opportunity Details -->
+        <table class="header-table" style="border-collapse: collapse; border: 1px solid black;">
+            <tr>
+                <th colspan="2" style="text-align: center; border: 1px solid black;">
+                    <h2>Detalles de la Oportunidad</h2>
+                </th>
+                <th colspan="2" style="text-align: center; border: 1px solid black; width: 50%;">
+                    <h2>Detalles del contacto</h2>
+                </th>
+            </tr>
+            <tr>
+                <td style="border-bottom: 1px solid; border-left: 1px solid; padding: 5px;"><b>Concesionario:</b></td>
+                <td style="border-bottom: 1px solid; width: 30%;">{!Concesionario.Name}</td>
+                <td style="border-bottom: 1px solid; border-left: 1px solid; padding: 5px;"><b>Cuenta:</b></td>
+                <td style="border-bottom: 1px solid; border-right: 1px solid;">{!Account.Name}</td>
+            </tr>
+            <tr>
+                <td style="border-bottom: 1px solid; border-left: 1px solid;  padding: 5px;"><b>Precio Total:</b></td>
+                <td style="border-bottom: 1px solid;">{!Opportunity.Precio_total__c}</td>
+                <td style="border-bottom: 1px solid; border-left: 1px solid; padding: 5px;"><b>Contacto:</b></td>
+                <td style="border-bottom: 1px solid; border-right: 1px solid;">{!Contact.Name}</td>
+            </tr>
+        </table>
+        
+        <!-- SECTION: Términos de Uso -->
+        <h3>Términos de Uso</h3>
+        <table style="width: 100%; border-collapse: collapse; border: 1px solid black; text-align: center">
+            <thead>
+                <tr>
+                    <th style="border: 1px solid black;">Vehículo</th>
+                    <th style="border: 1px solid black;">Fecha de Entrega</th>
+                    <th style="border: 1px solid black;">Fecha de Salida</th>
+                    <th style="border: 1px solid black;">Total de dias</th>
+                    <th style="border: 1px solid black;">Precio</th>
+                    
+                </tr>
+            </thead>
+            <tbody>
+                <apex:repeat value="{!TerminosDeUso}" var="termino">
+                    <tr>
+                        <td style="border: 1px solid black;">{!termino.Vehiculo__r.Name}</td>
+                        <td style="border: 1px solid black;">{!TEXT(DAY(termino.Fecha_entrega__c))}-{!TEXT(MONTH(termino.Fecha_entrega__c))}-{!TEXT(YEAR(termino.Fecha_entrega__c))}</td>
+                        <td style="border: 1px solid black;">{!TEXT(DAY(termino.Fecha_salida__c))}-{!TEXT(MONTH(termino.Fecha_salida__c))}-{!TEXT(YEAR(termino.Fecha_salida__c))}</td>                        
+                        <td style="border: 1px solid black;">
+                            {!TEXT(termino.Fecha_entrega__c - termino.Fecha_salida__c)}
+                        </td>                        
+                        <td style="border: 1px solid black;">{!termino.Precio_total__c}</td>
+                    </tr>
+                </apex:repeat>
+                    <tr>
+                        <th style="border: 1px solid black;">Total</th>
+                        <td colspan="3" style="border: 1px solid black;"></td>
+                        <td style="border: 1px solid black;"><b>{!Opportunity.Precio_total__c}</b></td>
+                    </tr>
+            </tbody>
+        </table>
+
+        <!-- SECTION: Vehículos -->
+        <h3>Detalles de Vehículos</h3>
+        <table style="width: 100%; border-collapse: collapse; border: 1px solid black; text-align: center">
+            <thead>
+                <tr>
+                    <th style="border: 1px solid black;">Vehículo</th>
+                    <th style="border: 1px solid black;">Marca</th>
+                    <th style="border: 1px solid black;">Kilómetros</th>
+                    <th style="border: 1px solid black;">Precio por Día</th>
+                </tr>
+            </thead>
+            <tbody>
+                <apex:repeat value="{!Vehiculos}" var="vehiculo">
+                    <tr>
+                        <td style="border: 1px solid black;">{!vehiculo.Name}</td>
+                        <td style="border: 1px solid black;">{!vehiculo.Marca__c}</td>
+                        <td style="border: 1px solid black;">{!vehiculo.Kilometros__c}</td>
+                        <td style="border: 1px solid black;">{!vehiculo.PrecioDia__c}</td>
+                        <td style="border: 1px solid black;">
+                            <apex:image url="{!$Resource[vehiculo.Marca__c]}"  width="50" height="50" />
+                        </td>
+                    </tr>
+                </apex:repeat>
+            </tbody>
+        </table>
+    </body>
+</apex:page>
