@@ -6,6 +6,8 @@ import { getRecord } from 'lightning/uiRecordApi';
 
 import buscarCoches from '@salesforce/apex/BuscadorController.buscarCoches';
 
+import buscarCochesFecha from '@salesforce/apex/BuscadorController.buscarCochesFecha';
+
 import agregarCoches from '@salesforce/apex/BuscadorController.agregarCoche';
 
 import buscarCocheFiltrado from '@salesforce/apex/BuscadorController.buscarCoche';
@@ -24,6 +26,13 @@ export default class Buscador extends NavigationMixin(LightningElement) {
     //FECHAS
     fechaSalida = '';
     fechaEntrega = '';
+
+    error = '';
+    msg = '';
+    botonBuscar = false;
+
+    filtroError = 'move';
+    divClass = 'carslist';
 
 
     // @wire (getOpp) loadConcesionario (result) {
@@ -45,7 +54,7 @@ export default class Buscador extends NavigationMixin(LightningElement) {
     }
 
     loadCars () {
-        buscarCoches({searchTerm: this.searchTerm, IdConce: this.concesionarioId})
+        buscarCochesFecha({searchTerm: this.searchTerm, IdConce: this.concesionarioId, fechaEntrega: this.fechaEntrega, fechaSalida: this.fechaSalida})
         .then(result => {
             if (result && result.length > 0) {
                 this.cars = result.map(car => {
@@ -57,18 +66,21 @@ export default class Buscador extends NavigationMixin(LightningElement) {
                         logoUrl: logoUrl
                     };
                 });
-                console.log('Cargue');
+                const texto = result.length + ' coches cargados';
+                this.msg = (this.botonBuscar) ? texto + ' - ' + this.msg : texto;
+                this.botonBuscar = false;
+                this.error = '';
             } else {
                 console.log('Error al cargar');
+                this.error = 'No se encontraron coches';
+                this.msg = '';
+                this.cars = [];
             }
         });
     
     }
 
     buscarCoche (event) {
-        // Debouncing this method: do not update the reactive property as
-        // long as this function is being called within a delay of 300 ms.
-        // This is to avoid a very large number of Apex method calls.
         window.clearTimeout(this.delayTimeout);
         const searchTerm = event.target.value;
         // eslint-disable-next-line @lwc/lwc/no-async-operation
@@ -77,37 +89,36 @@ export default class Buscador extends NavigationMixin(LightningElement) {
             this.loadCars();
         }, 300);
     }
-    
-    get hasResults() {
-        return (this.cars && this.cars.length > 0);
-    }
-
-    handleCarView(event) {
-        // Get bear record id from bearview event
-        const carId = event.detail;
-        // Navigate to bear record page
-        this[NavigationMixin.Navigate]({
-            type: 'standard__recordPage',
-            attributes: {
-                recordId: carId,
-                objectApiName: 'Vehiculo__c',
-                actionName: 'view',
-            },
-        });
-    }
 
     agregar (event) {
         let idNewCar = event.target.dataset.id;
-        console.log(idNewCar);
-        agregarCoches({ 
-            idCoche: idNewCar, idConce: this.concesionarioId, idOpp: this.recordId, 
-            fechaEntrega: this.fechaEntrega, fechaSalida: this.fechaSalida})
-            .then (result => {
-                console.log('Resultado ', result);
-            })
-            .catch (error => {
-                console.log('Err', error);
-            })
+        if (this.fechaEntrega != '' && this.fechaSalida != '') {
+            if (this.botonBuscar) {
+                agregarCoches({ 
+                    idCoche: idNewCar, idConce: this.concesionarioId, idOpp: this.recordId, 
+                    fechaEntrega: this.fechaEntrega, fechaSalida: this.fechaSalida})
+                    .then (result => {
+                        this.msg = 'Coche agregado a la oportunidad con éxito';
+                        this.error = '';
+                        this.loadCars();
+                    })
+                    .catch (error => {
+                        console.log('Err', error);
+                    })
+            } else {
+                this.msg = '';
+                this.error = 'Busque por fecha para poder agregar vehículos';
+                this.divClass = 'carslist ' +  this.filtroError;
+            }
+        } else {
+            this.msg = '';
+            this.error = 'Seleccione una fecha para agregar un vehiculo';
+            this.divClass = 'carslist ' +  this.filtroError;
+        }
+
+        setTimeout (() => {
+            this.divClass = 'carslist ';
+        }, 2000);
     }
 
     fechaSalidaChage (e) {
@@ -119,31 +130,55 @@ export default class Buscador extends NavigationMixin(LightningElement) {
     }
 
     searchCars(event) {
-        console.log(this.fechaEntrega + "////" + this.fechaSalida);
         if (this.fechaEntrega != '' && this.fechaSalida != '') {
-            console.log('detro del if')
-            buscarCocheFiltrado({ fechaSalida: this.fechaSalida, fechaEntrega: this.fechaEntrega, conceId:  this.concesionarioId})
-                .then(result => {
-                    if (result && result.length > 0) {
-                        this.cars = result.map(car => {
-                            const logoMatch = car.Logo_marca__c.match(/src="([^"]+)"/);
-                            const logoUrl = logoMatch ? logoMatch[1] : '';
-            
-                            return {
-                                ...car,
-                                logoUrl: logoUrl
-                            };
-                        });
-                        console.log('Cargue');
-                    } else {
-                        console.log('Error al cargar');
-                    }
-                })
-                .catch(error => {
-                    console.log(error);
-                    this.cars = [];
-                });
-        }
+            if (this.fechaEntrega > this.fechaSalida) {
+                this.botonBuscar = true;
+                this.error = '';
+                console.log(this.fechaEntrega + "////" + this.fechaSalida);
+                console.log('detro del if')
+                buscarCocheFiltrado({ fechaSalida: this.fechaSalida, fechaEntrega: this.fechaEntrega, conceId:  this.concesionarioId})
+                    .then(result => {
+                        if (result && result.length > 0) {
+                            this.cars = result.map(car => {
+                                const logoMatch = car.Logo_marca__c.match(/src="([^"]+)"/);
+                                const logoUrl = logoMatch ? logoMatch[1] : '';
+                
+                                return {
+                                    ...car,
+                                    logoUrl: logoUrl
+                                };
+                            });
+                            this.msg = result.length + ' coches cargados';
+                            this.error = '';
+                        } else {
+                            this.error = 'No se han encontrado vehículos';
+                            this.botonBuscar = false;
+                            this.msg = '';
+                            this.cars = [];
+                        }
+                    })
+                    .catch(error => {
+                        console.log(error);
+                        this.cars = [];
+                    });
+            } else {
+                this.error = 'La fecha de entrega no puede ser inferior a la de salida';
+                this.divClass = 'carslist ' +  this.filtroError;
+            }
+        } else if (this.fechaEntrega == '' && this.fechaSalida == '') {
+            this.error = 'Seleccione una fecha';
+            this.divClass = 'carslist ' +  this.filtroError;
+        } else if (this.fechaSalida == '') {
+            this.error = 'Seleccione una fecha de salida';
+            this.divClass = 'carslist ' +  this.filtroError;
+        } else if (this.fechaEntrega == '' ) {
+            this.error = 'Seleccione una fecha de entrega';
+            this.divClass = 'carslist ' +  this.filtroError;
+        } 
+
+        setTimeout (() => {
+            this.divClass = 'carslist ';
+        }, 2000);
     }
 
     deleteFilter(event) {
@@ -151,6 +186,9 @@ export default class Buscador extends NavigationMixin(LightningElement) {
         this.fechaSalida = '';
         this.searchTerm = '';
         this.loadCars();
+        this.error = '';
+        this.msg = '';
+        this.botonBuscar = false;
     }
 
     conceChange (e) {

@@ -6,7 +6,7 @@
 .carslist {
     box-shadow: 0px 0px 8px rgb(78, 76, 76);
     border-radius: 11px;
-    height: 260px;
+    height: 290px;
     display: flex;
     flex-direction: column;
     justify-content: center;
@@ -36,4 +36,50 @@
 
 .loadData {
     padding-bottom: 15px;
+}
+
+.btnAdCar {
+    padding: 50px;
+}
+
+.finalText {
+    margin-bottom: 15px;
+    text-align: center;
+}
+
+.customError {
+    padding-bottom: 15px;
+    text-decoration: underline;
+    font-size: 16px;
+    font-weight: bold;
+}
+
+.error {
+    color: red;
+}
+
+.success {
+    color: green;
+}
+
+.move {
+    animation: sacudir 1s ease-in-out;
+}
+
+@keyframes sacudir {
+    0% {
+        transform: translateX(0);
+    }
+    25% {
+        transform: translateX(-10px);
+    }
+    50% {
+        transform: translateX(10px);
+    }
+    75% {
+        transform: translateX(-10px);
+    }
+    100% {
+        transform: translateX(0);
+    }
 }

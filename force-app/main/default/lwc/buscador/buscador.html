@@ -1,6 +1,10 @@
 <template>
     <lightning-card title="Cars">
         <div class="slds-card__body slds-card__body_inner">
+            <div class="customError">
+                <p class="error">{error}</p>
+                <p class="success">{msg}</p>
+            </div>
             <template if:true={cars}>
                 <lightning-input type="search"
                     onchange={buscarCoche}
@@ -11,25 +15,30 @@
                     value={searchTerm}>
                 </lightning-input>
 
-                <lightning-input type="date" 
-                name="stDt" label="Fecha salida" id="salida" onchange={fechaSalidaChage} value={fechaSalida}>
-                </lightning-input>
-
-                <lightning-input type="date" 
-                name="stDt" label="Fecha entrega" id="entrega" onchange={fechaEntregaChange} value={fechaEntrega}>
-                </lightning-input>
+                <div class="dates">
+                    <div class="salida">
+                        <lightning-input type="date" 
+                        name="stDt" label="Fecha salida" id="salida" onchange={fechaSalidaChage} value={fechaSalida}>
+                        </lightning-input>
+                    </div>
+                    <div class="entrega">
+                        <lightning-input type="date" 
+                        name="stDt" label="Fecha entrega" id="entrega" onchange={fechaEntregaChange} value={fechaEntrega}>
+                        </lightning-input>
+                    </div>
+                </div>
 
                 <div class="buttons">
-                    <lightning-button label="Buscar" onclick={searchCars}></lightning-button>
-                    <lightning-button label="Borrar filtro" onclick={deleteFilter}></lightning-button>
+                    <lightning-button variant="brand" label="Buscar" onclick={searchCars}></lightning-button>
+                    <lightning-button variant="destructive" label="Borrar filtro" onclick={deleteFilter}></lightning-button>
                 </div>
                 <!-- Cards de los coches -->
-				<div class="carsMain" id="carsMainElement">
+				<div class="carsMain " id="carsMainElement">
                     <lightning-layout multiple-rows="true" pull-to-boundary="small">
                         <template for:each={cars} for:item="car">
                             <lightning-layout-item key={car.Id} size="3" class="slds-var-p-around_x-small">
                                 <!-- Aquí directamente mostramos los datos del coche -->
-                                <div class="carslist">
+                                <div class={divClass}>
                                     <lightning-card title={car.Name}>
                                         <div class="slds-card__body slds-card__body_inner">
                                             <p><strong>Id:</strong> {car.Id}</p>
@@ -37,9 +46,9 @@
                                             <p><strong>Precio por Día:</strong> {car.PrecioDia__c}</p>
                                             <p><strong>Kilómetros:</strong> {car.Kilometros__c}</p>
                                             <p><strong>Modelo:</strong> {car.Modelo_coche__c}</p>
-                                            <img src={car.logoUrl} alt="Logo Marca" style="max-height: 50px; max-width: 100px;" class="logo"/>
-            
-                                            <lightning-button label="Agregar coche" onclick={agregar} data-id={car.Id}></lightning-button>
+                                            <p class="finalText"><img src={car.logoUrl} alt="Logo Marca" style="max-height: 50px; max-width: 100px;" class="logo"/></p>
+                                    
+                                            <lightning-button label="Agregar coche" onclick={agregar} data-id={car.Id} class="btnAdCar"></lightning-button>
                                         </div>
                                     </lightning-card>
                                 </div>
