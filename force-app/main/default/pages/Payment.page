@@ -1,136 +1,116 @@
 <apex:page controller="makePaymentController">
     <apex:param name="recordId" value="{!$CurrentPage.parameters.recordId}" />
-
-    <!-- Utiliza SLDS para mejorar el diseño -->
-    <apex:facet name="style">
+    <head>
         <style>
-            body {
-                font-family: "Salesforce Sans", Arial, sans-serif;
-                background-color: #f4f6f9;
+            .no-hover:hover {
+
+            }
+            .details {
+                position: absolute;
+                background-color: white;
                 padding: 20px;
-            }
-            .header-table {
-                margin-bottom: 20px;
-                width: 100%;
-            }
-            .slds-table {
-                margin-top: 20px;
-                border-collapse: collapse;
-                width: 100%;
-            }
-            .slds-table th, .slds-table td {
-                padding: 12px 16px; /* Aumentar el padding para que sea más grande */
+                top: 5%;
+                left: 5%;
+                height: 40rem;
+                width: 80%;
                 text-align: center;
-                font-size: 16px; /* Tamaño de texto más grande */
-            }
-            .slds-table th {
-                background-color: #f3f6f9;
-                font-weight: bold;
-            }
-            .slds-button {
-                margin-top: 20px;
-                padding: 10px 20px;
-            }
-            .title {
-                font-size: 2rem;
-                font-weight: bold;
-                color: #0070d2;
-            }
-            .table-header {
-                background-color: #f3f6f9;
-            }
-            .detail-section {
-                margin-bottom: 40px;
-            }
-            .table-container {
-                overflow-x: auto; /* Esto permitirá ver la tabla completa si hay muchos datos */
+                font-size: 25px;
             }
         </style>
-    </apex:facet>
-
+    </head>
     <body>
+        
+        <apex:outputPanel rendered="{!NOT(ISBLANK(realizado))}">
+            <div class="details">
+                <h2>{!realizado}</h2>
+                <p>Cualquier duda pongase en contacto con su proveedor</p>
+            </div>
+        </apex:outputPanel>
+
         <!-- HEADER: Company Info -->
-        <div class="detail-section">
-            <table class="slds-table slds-table_bordered">
+        <div class="detail-section" style="padding: 20px; background-color: #f9f9f9;">
+            <table class="slds-table slds-table_bordered" style="width: 100%; border: 1px solid #ccc; border-radius: 8px; box-shadow: 4px 11px 17px 0px rgba(0, 0, 0, 0.836);">
                 <tr>
-                    <td colspan="2" style="text-align: center; padding: 20px;">
-                        <h1 class="title">Atlas Car {!Concesionario.Name}</h1>
+                    <td colspan="2" style="text-align: center; padding: 20px; background-color: #0070d2; color: white; border-radius: 8px;">
+                        <h1 class="title" style="font-size: 28px; font-weight: bold; text-transform: uppercase;">Atlas Car {!Concesionario.Name}</h1>
                     </td>
                 </tr>
                 <tr>
-                    <td style="width: 55%; text-align: center;">
-                        <apex:image width="1.45in" url="{!$Resource.Logo2}" style="padding: 20px;" />
-                    </td>
-                    <td style="text-align: center;">
-                        <table class="slds-table slds-table_bordered">
+                    <td style="text-align: center; padding: 20px; width: 55%;">
+                        <table class="slds-table slds-table_bordered" style="width: 100%; background-color: #fff; border-radius: 8px; border-collapse: collapse;">
                             <thead>
-                                <tr>
-                                    <th colspan="2" class="slds-text-align_center slds-text-title_caps slds-size_1-of-1">
-                                        <h2>Detalles</h2>
+                                <tr style="background-color: #f4f4f4;">
+                                    <th colspan="2" class="slds-text-align_center slds-text-title_caps slds-size_1-of-1" style="text-align:center;">
+                                        <h2 style="font-size: 22px; color: #0070d2; font-weight: bold; padding: 10px;">Detalles</h2>
                                     </th>
                                 </tr>
                             </thead>
                             <tbody>
-                                <tr>
-                                    <td><b>Concesionario:</b></td>
-                                    <td>{!Concesionario.Name}</td>
+                                <tr style="border-bottom: 1px solid #ddd;">
+                                    <td style="font-weight: bold; padding: 10px; border-bottom: solid 1px black;">Concesionario:</td>
+                                    <td style="padding: 10px; border-bottom: solid 1px black;">{!Concesionario.Name}</td>
                                 </tr>
-                                <tr>
-                                    <td><b>Cuenta:</b></td>
-                                    <td>{!Account.Name}</td>
+                                <tr style="border-bottom: 1px solid #ddd;">
+                                    <td style="font-weight: bold; padding: 10px; border-bottom: solid 1px black;">Cuenta:</td>
+                                    <td style="padding: 10px; border-bottom: solid 1px black;">{!Account.Name}</td>
                                 </tr>
-                                <tr>
-                                    <td><b>Precio Total:</b></td>
-                                    <td>{!Opportunity.Precio_total__c}</td>
+                                <tr style="border-bottom: 1px solid #ddd;">
+                                    <td style="font-weight: bold; padding: 10px; border-bottom: solid 1px black;">Precio Total:</td>
+                                    <td style="padding: 10px; border-bottom: solid 1px black;">{!Opportunity.Precio_total__c}</td>
                                 </tr>
-                                <tr>
-                                    <td><b>Contacto:</b></td>
-                                    <td>{!Contact.Name}</td>
+                                <tr style="border-bottom: 1px solid #ddd;">
+                                    <td style="font-weight: bold; padding: 10px; border-bottom: solid 1px black;">Contacto:</td>
+                                    <td style="padding: 10px; border-bottom: solid 1px black;">{!Contact.Name}</td>
                                 </tr>
                             </tbody>
                         </table>
                     </td>
+                    <td style="text-align: center; padding: 15px;">
+                        <apex:image width="1.45in" url="{!$Resource.Logo2}" style="padding: 20px; border-radius: 10px; width: 30%;" />
+                    </td>
+
                 </tr>
             </table>
         </div>
-
+        
         <!-- SECTION: Términos de Uso -->
-        <div class="detail-section">
-            <h3 class="title">Términos de Uso</h3>
-            <table class="slds-table slds-table_bordered slds-text-align_center">
+        <div class="detail-section" style="padding: 20px; background-color: #f9f9f9; box-shadow: 0px 4px 8px rgba(0, 0, 0, 0);">
+            <h3 class="title" style="font-size: 24px; font-weight: bold; color: #0070d2; margin-bottom: 20px;">Términos de Uso</h3>
+            <table class="slds-table slds-table_bordered slds-text-align_center" style="border-collapse: collapse; width: 100%; border: 1px solid #ccc; border-radius: 8px; background-color: #fff; box-shadow: 4px 11px 17px 0px rgba(0, 0, 0, 0.836);">
                 <thead>
-                    <tr class="table-header">
-                        <th>Vehículo</th>
-                        <th>Fecha de Entrega</th>
-                        <th>Fecha de Salida</th>
-                        <th>Total de días</th>
-                        <th>Precio</th>
+                    <tr style="background-color: #0070d2; color: white;">
+                        <th style="padding: 12px 10px;">Vehículo</th>
+                        <th style="padding: 12px 10px;">Fecha de Entrega</th>
+                        <th style="padding: 12px 10px;">Fecha de Salida</th>
+                        <th style="padding: 12px 10px;">Total de días</th>
+                        <th style="padding: 12px 10px;">Precio</th>
                     </tr>
                 </thead>
                 <tbody>
                     <apex:repeat value="{!TerminosDeUso}" var="termino">
-                        <tr>
-                            <td>{!termino.Vehiculo__r.Name}</td>
-                            <td>{!TEXT(DAY(termino.Fecha_entrega__c))}-{!TEXT(MONTH(termino.Fecha_entrega__c))}-{!TEXT(YEAR(termino.Fecha_entrega__c))}</td>
-                            <td>{!TEXT(DAY(termino.Fecha_salida__c))}-{!TEXT(MONTH(termino.Fecha_salida__c))}-{!TEXT(YEAR(termino.Fecha_salida__c))}</td>
-                            <td>{!TEXT(termino.Fecha_entrega__c - termino.Fecha_salida__c)}</td>
-                            <td>{!termino.Precio_total__c}</td>
+                        <tr style="border-bottom: 1px solid #ddd;">
+                            <td style="padding: 10px; border-bottom: solid 1px black;">{!termino.Vehiculo__r.Name}</td>
+                            <td style="padding: 10px; border-bottom: solid 1px black;">{!TEXT(DAY(termino.Fecha_entrega__c))}-{!TEXT(MONTH(termino.Fecha_entrega__c))}-{!TEXT(YEAR(termino.Fecha_entrega__c))}</td>
+                            <td style="padding: 10px; border-bottom: solid 1px black;">{!TEXT(DAY(termino.Fecha_salida__c))}-{!TEXT(MONTH(termino.Fecha_salida__c))}-{!TEXT(YEAR(termino.Fecha_salida__c))}</td>
+                            <td style="padding: 10px; border-bottom: solid 1px black;">{!TEXT(termino.Fecha_entrega__c - termino.Fecha_salida__c)}</td>
+                            <td style="padding: 10px; border-bottom: solid 1px black;">{!termino.Precio_total__c}</td>
                         </tr>
                     </apex:repeat>
-                    <tr>
-                        <th>Total</th>
-                        <td colspan="3"></td>
-                        <td><b>{!Opportunity.Precio_total__c}</b></td>
+                    <tr style="background-color: #f4f4f4;">
+                        <th style="padding: 12px 10px; text-align: right;">Total</th>
+                        <td colspan="3" style="padding: 10px;"></td>
+                        <td style="padding: 10px; font-weight: bold; color: #0070d2;">{!Opportunity.Precio_total__c}</td>
                     </tr>
                 </tbody>
             </table>
         </div>
-
+        
         <!-- FORMULARIO PARA EL BOTÓN -->
-        <div style="text-align: center;">
+        <div style="text-align: center; margin-top: 30px;">
             <apex:form>
-                <apex:commandButton value="Procesar Pago" action="{!procesarPago}" styleClass="slds-button slds-button_neutral" />
+                <apex:commandButton value="Procesar Pago" action="{!procesarPago}" styleClass="no-hover" style="font-size: 16px; border-radius: 8px; padding: 15px; margin-bottom: 30px;"/>
             </apex:form>
         </div>
+        
     </body>
 </apex:page>

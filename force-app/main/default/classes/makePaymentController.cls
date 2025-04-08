@@ -6,19 +6,23 @@ public with sharing class makePaymentController {
     public Contact Contact { get; set; }
     public Account Account { get; set; }
     
+    public String realizado {get; set;}
 
     public makePaymentController() {
-        // Obtención del recordId de la URL
         String opportunityId = ApexPages.currentPage().getParameters().get('recordId');
-        
         // Verificar que la oportunidad existe
-        Opportunity = [SELECT Id, Name, Concesionario__c, Precio_total__c, AccountId 
+        Opportunity = [SELECT Id, Name, Concesionario__c, Precio_total__c, AccountId, Presupuesto_aceptado__c
                        FROM Opportunity WHERE Id = :opportunityId LIMIT 1];
         if (Opportunity == null) {
-            // Si no se encuentra la oportunidad, lanzar un error
-            throw new AuraHandledException('No se encontró la Oportunidad.');
+            realizado = 'Oportunidad no encontrada';
+        } else if (Opportunity.Presupuesto_aceptado__c) {
+            realizado = 'Pago ya realizado';
+        } else {
+            loadData(opportunityId, Opportunity);
         }
+    }
 
+    private void loadData (String opportunityId, Opportunity Opportunity) {
         // Cargar términos de uso relacionados con la oportunidad
         TerminosDeUso = [SELECT Id, Name, Fecha_entrega__c, Fecha_salida__c, Vehiculo__c, 
                                 Concesionario__c, Opportunity__c, Precio_total__c, 
@@ -58,6 +62,9 @@ public with sharing class makePaymentController {
     }
 
     public PageReference procesarPago() {
+        Opportunity.Presupuesto_aceptado__c = true;
+        update Opportunity;
+        realizado = 'Pago realizado con éxito';
         return null;
     }
 

@@ -20,8 +20,8 @@ export default class SendPdfOpportunity extends LightningElement {
         }
 
         const urlPdf = `https://brave-badger-q3ht3t-dev-ed--c.trailblaze.vf.force.com/apex/opportunityPdfPage?recordId=${this.recordId}`;
-        const urlPago = `https://brave-badger-q3ht3t-dev-ed--c.trailblaze.vf.force.com/apex/opportunityPdfPage?recordId=${this.recordId}`;
-        linkOpp ({link: urlPdf, idOpp: this.recordId})
+        const urlPago = `https://brave-badger-q3ht3t-dev-ed--c.trailblaze.vf.force.com/apex/Payment?recordId=${this.recordId}`;
+        linkOpp ({link: urlPdf, idOpp: this.recordId, linkPage: urlPago})
             .then (result => {
                 console.log('soy concha entro');
             })
@@ -31,6 +31,11 @@ export default class SendPdfOpportunity extends LightningElement {
         changeBox ({idOpp: this.recordId})
         .then (result => {
             console.log('soy concha entro');
+            //location.reload();
+        })
+        .catch (er => {
+            console.log('errr');
+            console.log(er);
         })
     }
 }

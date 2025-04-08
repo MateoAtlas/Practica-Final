@@ -138,6 +138,7 @@ export default class Buscador extends NavigationMixin(LightningElement) {
                 console.log('detro del if')
                 buscarCocheFiltrado({ fechaSalida: this.fechaSalida, fechaEntrega: this.fechaEntrega, conceId:  this.concesionarioId})
                     .then(result => {
+                        console.log(result);
                         if (result && result.length > 0) {
                             this.cars = result.map(car => {
                                 const logoMatch = car.Logo_marca__c.match(/src="([^"]+)"/);
