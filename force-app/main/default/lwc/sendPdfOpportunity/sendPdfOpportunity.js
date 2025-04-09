@@ -20,18 +20,18 @@ export default class SendPdfOpportunity extends LightningElement {
         }
 
         const urlPdf = `https://brave-badger-q3ht3t-dev-ed--c.trailblaze.vf.force.com/apex/opportunityPdfPage?recordId=${this.recordId}`;
-        const urlPago = `https://brave-badger-q3ht3t-dev-ed--c.trailblaze.vf.force.com/apex/Payment?recordId=${this.recordId}`;
+        const urlPago = `https://brave-badger-q3ht3t-dev-ed.trailblaze.my.site.com/Testcomm/s/payment-page?recordId=${this.recordId}`;
         linkOpp ({link: urlPdf, idOpp: this.recordId, linkPage: urlPago})
             .then (result => {
-                console.log('soy concha entro');
+                console.log('entro');
             })
     }
 
     enviarPresupuesto () {
         changeBox ({idOpp: this.recordId})
         .then (result => {
-            console.log('soy concha entro');
-            //location.reload();
+            console.log('entro');
+            location.reload();
         })
         .catch (er => {
             console.log('errr');

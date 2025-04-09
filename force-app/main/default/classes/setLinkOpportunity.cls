@@ -12,11 +12,11 @@ public with sharing class setLinkOpportunity {
 
     @AuraEnabled
     public static void changeCheckBox(String idOpp) {
-        //List <Opportunity> oppUpdate  = [SELECT Id, Name, Presupuesto_enviado__c FROM Opportunity WHERE Id = :idOpp];
-        //Opportunity opp = oppUpdate[0];
-        //opp.Presupuesto_enviado__c = true;
-        //opp.StageName = 'Reserva';
-        //update opp;
+        List <Opportunity> oppUpdate  = [SELECT Id, Name, Presupuesto_enviado__c FROM Opportunity WHERE Id = :idOpp];
+        Opportunity opp = oppUpdate[0];
+        opp.Presupuesto_enviado__c = true;
+        opp.StageName = 'Reserva';
+        update opp;
 
         sendMail2(idOpp);
     }
@@ -96,8 +96,7 @@ public with sharing class setLinkOpportunity {
             
             // Cuerpo del correo en texto plano
             mail.setPlainTextBody('Hola, \n\nGracias por tu interés en nuestros productos. Nos complace informarte que tu presupuesto está listo para ser revisado. ' +
-                'Puedes ver los detalles completos del presupuesto a través del siguiente enlace: \n\n' +
-                opp.Link_presupuesto__c +  // Usamos el Link_presupuesto__c de la Opportunity
+                'Puedes ver los detalles completos del presupuesto en el archivo adjunto aquí abajo\n\n' +
                 '\n\nAdemás, si deseas proceder con el pago, puedes hacerlo de manera rápida y segura a través del siguiente enlace: \n\n' +
                 opp.Link_Pago__c +  // Usamos el Link_Pago__c de la Opportunity
                 '\n\nSi tienes alguna pregunta o necesitas más información, no dudes en contactarnos. Estamos a tu disposición para ayudarte. \n\n' +
@@ -107,8 +106,7 @@ public with sharing class setLinkOpportunity {
             // Cuerpo del correo en HTML
             mail.setHtmlBody('<p>Hola,</p>' +
                 '<p>Gracias por tu interés en nuestros productos. Nos complace informarte que tu presupuesto está listo para ser revisado. ' +
-                'Puedes ver los detalles completos del presupuesto a través del siguiente enlace:</p>' +
-                '<p><a href="' + opp.Link_presupuesto__c + '">Ver presupuesto</a></p>' +
+                'Puedes ver los detalles completos del presupuesto en el archivo adjunto aquí abajo</p>' +
                 '<p>Además, si deseas proceder con el pago, puedes hacerlo de manera rápida y segura a través del siguiente enlace:</p>' +
                 '<p><a href="' + opp.Link_Pago__c + '">Hacer pago</a></p>' +
                 '<p>Si tienes alguna pregunta o necesitas más información, no dudes en contactarnos. Estamos a tu disposición para ayudarte.</p>' +

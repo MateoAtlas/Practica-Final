@@ -68,7 +68,6 @@ export default class Buscador extends NavigationMixin(LightningElement) {
                 });
                 const texto = result.length + ' coches cargados';
                 this.msg = (this.botonBuscar) ? texto + ' - ' + this.msg : texto;
-                this.botonBuscar = false;
                 this.error = '';
             } else {
                 console.log('Error al cargar');
@@ -101,6 +100,7 @@ export default class Buscador extends NavigationMixin(LightningElement) {
                         this.msg = 'Coche agregado a la oportunidad con éxito';
                         this.error = '';
                         this.loadCars();
+
                     })
                     .catch (error => {
                         console.log('Err', error);

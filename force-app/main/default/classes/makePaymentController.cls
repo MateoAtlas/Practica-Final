@@ -1,4 +1,4 @@
-public with sharing class makePaymentController {
+public class makePaymentController {
     public Opportunity Opportunity { get; set; }
     public List<Terminos_de_uso__c> TerminosDeUso { get; set; }
     public List<Vehiculo__c> Vehiculos { get; set; }
@@ -9,7 +9,10 @@ public with sharing class makePaymentController {
     public String realizado {get; set;}
 
     public makePaymentController() {
-        String opportunityId = ApexPages.currentPage().getParameters().get('recordId');
+        System.debug('pin pan');
+        System.debug('ID recordId -> '+ ApexPages.currentPage().getParameters().get('id'));
+
+        String opportunityId = ApexPages.currentPage().getParameters().get('id');
         // Verificar que la oportunidad existe
         Opportunity = [SELECT Id, Name, Concesionario__c, Precio_total__c, AccountId, Presupuesto_aceptado__c
                        FROM Opportunity WHERE Id = :opportunityId LIMIT 1];
@@ -63,6 +66,7 @@ public with sharing class makePaymentController {
 
     public PageReference procesarPago() {
         Opportunity.Presupuesto_aceptado__c = true;
+        Opportunity.StageName = 'Closed won';
         update Opportunity;
         realizado = 'Pago realizado con éxito';
         return null;
