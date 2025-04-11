@@ -12,11 +12,22 @@ public with sharing class setLinkOpportunity {
 
     @AuraEnabled
     public static void changeCheckBox(String idOpp) {
+        /* OPORTUNIDAD */
         List <Opportunity> oppUpdate  = [SELECT Id, Name, Presupuesto_enviado__c FROM Opportunity WHERE Id = :idOpp];
         Opportunity opp = oppUpdate[0];
         opp.Presupuesto_enviado__c = true;
         opp.StageName = 'Reserva';
+        opp.Fecha_pago_enviado__c = System.today();
         update opp;
+        /* TERMINOS DE USO BLOQUEO */
+        List <Terminos_de_uso__c> termsOpp = [SELECT Id, Bloqueado__c, Opportunity__c
+                                            FROM Terminos_de_uso__c
+                                            WHERE Opportunity__c = :idOpp];
+        for (Terminos_de_uso__c termino : termsOpp) {
+            termino.Bloqueado__c = true;
+        }
+
+        update termsOpp;
 
         sendMail2(idOpp);
     }
@@ -88,7 +99,7 @@ public with sharing class setLinkOpportunity {
             attachment.setContentType('application/pdf');
     
             // Configuración del correo
-            String[] toAddresses = new String[] {'m.sanjuan@atlascloud.es'}; 
+            String[] toAddresses = new String[] {'m.sanjuan@atlascloud.es', 'j.delacruz@atlascloud.es'}; 
             mail.setToAddresses(toAddresses);
             mail.setReplyTo('support@acme.com');
             mail.setSenderDisplayName('Salesforce Support');

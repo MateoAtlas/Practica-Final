@@ -54,10 +54,10 @@ public with sharing class BuscadorController {
         }
 
         return [
-            SELECT Name, Marca__c, PrecioDia__c, Kilometros__c, Modelo_coche__c, Logo_marca__c 
+            SELECT Name, Marca__c, PrecioDia__c, Kilometros__c, Modelo_coche__c, Logo_marca__c, Averiado__c
             FROM Vehiculo__c
             WHERE Concesionario__c = :conceId
-            AND Id NOT IN :vehiculosRango
+            AND Id NOT IN :vehiculosRango AND Averiado__c = false
         ];
     }
     @AuraEnabled(cacheable=true scope='global')
@@ -95,10 +95,10 @@ public with sharing class BuscadorController {
     
         
         // Construir la consulta
-        String query = 'SELECT Id, Name, Marca__c, PrecioDia__c, Kilometros__c, Modelo_coche__c, Logo_marca__c ' +
+        String query = 'SELECT Id, Name, Marca__c, PrecioDia__c, Kilometros__c, Modelo_coche__c, Logo_marca__c, Averiado__c ' +
                        'FROM Vehiculo__c ' +
                        'WHERE (Name LIKE :searchTerm OR Marca__c LIKE :searchTerm OR Modelo_coche__c LIKE :searchTerm) ' +
-                       'AND Concesionario__c = :IdConce ';
+                       'AND Concesionario__c = :IdConce AND Averiado__c = false';
         
         // Si hay fecha agregada meto la consulta
         if (fechaEntregaDate != null && fechaSalidaDate != null) {
@@ -115,9 +115,9 @@ public with sharing class BuscadorController {
 
     @AuraEnabled(cacheable=true scope='global')
     public static Vehiculo__c[] getAllCarsDate(String Id, Date fechaEntrega, Date fechaSalida) {
-        String query = 'SELECT Id, Name, Marca__c, PrecioDia__c, Kilometros__c, Modelo_coche__c, Logo_marca__c ' +
+        String query = 'SELECT Id, Name, Marca__c, PrecioDia__c, Kilometros__c, Modelo_coche__c, Logo_marca__c, Averiado__c ' +
                        'FROM Vehiculo__c ' +
-                       'WHERE Concesionario__c = :Id ';
+                       'WHERE Concesionario__c = :Id  AND Averiado__c = false ';
         
         // Si las fechas no están vacías, meto el filtro de fechas
         if (fechaEntrega != null && fechaSalida != null) {
