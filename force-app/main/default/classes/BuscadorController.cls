@@ -44,7 +44,7 @@ public with sharing class BuscadorController {
         List <Terminos_de_uso__c> terminosRango = [
             SELECT Id, Fecha_salida__c, Fecha_entrega__c, Name, Vehiculo__c
             FROM Terminos_de_uso__c
-            WHERE (Fecha_salida__c <= :fechaEntregaDate AND Fecha_entrega__c >= :fechaSalidaDate) AND Concesionario__c = :conceId
+            WHERE (Fecha_salida__c <= :fechaEntregaDate AND Fecha_entrega__c >= :fechaSalidaDate AND Bloqueado__c = true) AND Concesionario__c = :conceId
             LIMIT 50
         ];
 
@@ -106,7 +106,8 @@ public with sharing class BuscadorController {
                      'FROM Terminos_de_uso__c ' +
                      'WHERE Fecha_salida__c <= :fechaEntregaDate ' +
                      'AND Fecha_entrega__c >= :fechaSalidaDate ' +
-                     'AND Concesionario__c = :IdConce)';
+                     'AND Concesionario__c = :IdConce' +
+                     'AND Bloqueado__c = true)';
         }
         
         query += ' ORDER BY Name LIMIT 50';

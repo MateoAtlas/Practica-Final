@@ -82,18 +82,20 @@
                 <thead>
                     <tr style="background-color: #0070d2; color: white;">
                         <th style="padding: 12px 10px;">Vehículo</th>
-                        <th style="padding: 12px 10px;">Fecha de Entrega</th>
                         <th style="padding: 12px 10px;">Fecha de Salida</th>
+                        <th style="padding: 12px 10px;">Fecha de Entrega</th>
                         <th style="padding: 12px 10px;">Total de días</th>
                         <th style="padding: 12px 10px;">Precio</th>
+                        <th style="padding: 12px 10px;">Observaciones</th>
                     </tr>
                 </thead>
                 <tbody>
                     <apex:repeat value="{!TerminosDeUso}" var="termino">
                         <tr style="border-bottom: 1px solid #ddd;">
                             <td style="padding: 10px; border-bottom: solid 1px black;">{!termino.Vehiculo__r.Name}</td>
-                            <td style="padding: 10px; border-bottom: solid 1px black;">{!TEXT(DAY(termino.Fecha_entrega__c))}-{!TEXT(MONTH(termino.Fecha_entrega__c))}-{!TEXT(YEAR(termino.Fecha_entrega__c))}</td>
                             <td style="padding: 10px; border-bottom: solid 1px black;">{!TEXT(DAY(termino.Fecha_salida__c))}-{!TEXT(MONTH(termino.Fecha_salida__c))}-{!TEXT(YEAR(termino.Fecha_salida__c))}</td>
+                            <td style="padding: 10px; border-bottom: solid 1px black;">{!TEXT(DAY(termino.Fecha_entrega__c))}-{!TEXT(MONTH(termino.Fecha_entrega__c))}-{!TEXT(YEAR(termino.Fecha_entrega__c))}</td>
+
                             <td style="padding: 10px; border-bottom: solid 1px black;">{!TEXT(termino.Fecha_entrega__c - termino.Fecha_salida__c)}</td>
                             <td style="padding: 10px; border-bottom: solid 1px black;">{!termino.Precio_total__c}</td>
                         </tr>

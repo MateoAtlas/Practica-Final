@@ -1,5 +1,7 @@
 import { LightningElement, api, wire } from 'lwc';
 import { CurrentPageReference } from 'lightning/navigation';
+import { subscribe, publish } from 'c/pubsub';  // Aquí no se debe usar '/pubsub'
+
 
 import linkOpp from '@salesforce/apex/setLinkOpportunity.setLink';
 
@@ -31,7 +33,8 @@ export default class SendPdfOpportunity extends LightningElement {
         changeBox ({idOpp: this.recordId})
         .then (result => {
             console.log('entro');
-            location.reload();
+            location.reload();   
+            console.log('Vehículos bloqueados:', result);
         })
         .catch (er => {
             console.log('errr');

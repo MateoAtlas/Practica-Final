@@ -11,25 +11,86 @@ public with sharing class setLinkOpportunity {
     }
 
     @AuraEnabled
-    public static void changeCheckBox(String idOpp) {
-        /* OPORTUNIDAD */
-        List <Opportunity> oppUpdate  = [SELECT Id, Name, Presupuesto_enviado__c FROM Opportunity WHERE Id = :idOpp];
+    public static List<Id> changeCheckBox(String idOpp) {
+        // OPORTUNIDAD
+        List<Opportunity> oppUpdate = [SELECT Id, Name, Presupuesto_enviado__c FROM Opportunity WHERE Id = :idOpp];
         Opportunity opp = oppUpdate[0];
         opp.Presupuesto_enviado__c = true;
         opp.StageName = 'Reserva';
         opp.Fecha_pago_enviado__c = System.today();
         update opp;
-        /* TERMINOS DE USO BLOQUEO */
-        List <Terminos_de_uso__c> termsOpp = [SELECT Id, Bloqueado__c, Opportunity__c
-                                            FROM Terminos_de_uso__c
-                                            WHERE Opportunity__c = :idOpp];
+    
+        // TERMINOS DE USO BLOQUEO
+        List<Terminos_de_uso__c> termsOpp = [
+            SELECT Id, Bloqueado__c, Opportunity__c, Vehiculo__c
+            FROM Terminos_de_uso__c
+            WHERE Opportunity__c = :idOpp
+        ];
+    
+        List<Id> vehiculosId = new List<Id>();
+        List<String> vehiculosNames = new List<String>();
+    
         for (Terminos_de_uso__c termino : termsOpp) {
             termino.Bloqueado__c = true;
+            vehiculosId.add(termino.Vehiculo__c);
         }
-
-        update termsOpp;
-
+    
+        update termsOpp;  // Actualizamos los términos
+    
         sendMail2(idOpp);
+    
+        List<Vehiculo__c> vehiculos = [
+            SELECT Id, Name, Disponible__c FROM Vehiculo__c WHERE Id IN :vehiculosId
+        ];
+    
+        // Actualizamos el campo 'Disponible__c' de los vehículos a false
+        for (Vehiculo__c vehiculo : vehiculos) {
+            vehiculo.Disponible__c = false;
+            vehiculosNames.add(vehiculo.Name);  // Agregamos los nombres de los vehículos
+        }
+        update vehiculos;
+    
+        // Generar el mensaje con los nombres de los vehículos bloqueados
+        String vehiculosMessage = 'Una oportunidad ha bloqueado los siguientes coches: ' + String.join(vehiculosNames, ', ');
+    
+        // Llamar a la notificación
+        notifyAlert(vehiculosMessage, '005d2000005hiirAAA');
+    
+        System.debug(vehiculosMessage); // Para depurar el mensaje
+    
+        return vehiculosId;  // Devolvemos los IDs de los vehículos bloqueados
+    }
+    
+
+    private static void notifyAlert(String message, String targetId) {
+        // Obtener el Id para el tipo de notificación personalizada
+        CustomNotificationType notificationType = 
+            [SELECT Id, DeveloperName 
+             FROM CustomNotificationType 
+             WHERE DeveloperName = 'CocheBloqueado' LIMIT 1];
+        
+        // Crear una nueva notificación personalizada
+        Messaging.CustomNotification notification = new Messaging.CustomNotification();
+    
+        // Establecer los contenidos para la notificación
+        notification.setTitle('Coches reservados');
+        notification.setBody(message);
+    
+        // Establecer el tipo de notificación y el objetivo
+        notification.setNotificationTypeId(notificationType.Id);
+        notification.setTargetId(targetId);
+        
+        // Definir los usuarios destinatarios
+        Set<String> recipientsIds = new Set<String>();
+        recipientsIds.add('005d2000005hiirAAA'); // Agregar el ID de usuario destinatario aquí
+    
+        // Enviar la notificación
+        try {
+            notification.send(recipientsIds); // Enviar la notificación a los usuarios
+        }
+        catch (Exception e) {
+            System.debug('Problema al enviar la notificación: ' + e.getMessage());
+        }
     }
 
 
@@ -99,7 +160,7 @@ public with sharing class setLinkOpportunity {
             attachment.setContentType('application/pdf');
     
             // Configuración del correo
-            String[] toAddresses = new String[] {'m.sanjuan@atlascloud.es', 'j.delacruz@atlascloud.es'}; 
+            String[] toAddresses = new String[] {'m.sanjuan@atlascloud.es'}; 
             mail.setToAddresses(toAddresses);
             mail.setReplyTo('support@acme.com');
             mail.setSenderDisplayName('Salesforce Support');

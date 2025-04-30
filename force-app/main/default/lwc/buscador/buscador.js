@@ -1,7 +1,9 @@
 import { NavigationMixin } from 'lightning/navigation';
-import { publish, MessageContext } from 'lightning/messageService';
+import { MessageContext } from 'lightning/messageService';
 import { LightningElement, wire, api } from 'lwc';
 import { getRecord } from 'lightning/uiRecordApi';
+import { subscribe, publish } from 'c/pubsub';
+import { updateRecord } from 'lightning/uiRecordApi';
 
 
 import buscarCoches from '@salesforce/apex/BuscadorController.buscarCoches';
@@ -49,6 +51,7 @@ export default class Buscador extends NavigationMixin(LightningElement) {
                 this.loadCars();
             })
             .catch (error => {
+                console.log("connected callback");
                 console.log('Err', error);
             })
     }
@@ -100,9 +103,17 @@ export default class Buscador extends NavigationMixin(LightningElement) {
                         this.msg = 'Coche agregado a la oportunidad con éxito';
                         this.error = '';
                         this.loadCars();
-
+                        console.log("Publish");
+                        console.log(publish);
+                        publish('recordUpdated', {
+                            recordId: this.recordId,   // ID de la opp
+                            tipo: 'opportunity'            // Aclarar que es un opp
+                        });   
+                        //Id coche idNewCard
+                        //Id termino result
                     })
                     .catch (error => {
+                        console.log("agregando");
                         console.log('Err', error);
                     })
             } else {
