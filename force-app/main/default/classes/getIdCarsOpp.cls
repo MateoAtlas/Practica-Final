@@ -6,7 +6,7 @@ public with sharing class getIdCarsOpp {
         List<Terminos_de_uso__c> termsOpp = [
             SELECT Id, Vehiculo__c, Vehiculo__r.Name, Fecha_salida__c, Fecha_entrega__c, Opportunity__c
             FROM Terminos_de_uso__c 
-            WHERE Opportunity__c = :idOpp
+            WHERE Opportunity__c = :idOpp AND Finalizado__c = false
         ];
         
         List<Map<String, String>> vehiculos = new List<Map<String, String>>();
@@ -70,6 +70,7 @@ public with sharing class getIdCarsOpp {
                 AND Vehiculo__c = :vehiculoId
                 AND Fecha_salida__c <= :fechaEntrega
                 AND Fecha_entrega__c >= :fechaSalida
+                AND Finalizado__c = false
             ];
     
             terminosAEliminar.addAll(encontrados);
