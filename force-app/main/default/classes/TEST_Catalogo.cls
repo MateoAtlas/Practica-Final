@@ -33,11 +33,7 @@ public class TEST_Catalogo {
     }
 
     public static void testExternalApiCallToken () {
-        String mockResponse = 'grant_type=password&' + 
-            'client_id=3MVG9YFqzc_KnL.zyOWhG6bAS4IyuOCwxzCH8wLfG6EFgpv6iNuAWEima5PaDGLut2nC7QHQ5RzP4gp_KRzTR&'+
-            'client_secret=E8F5270DFFA7A94F3C99A7662655FF6C95CEA5C5346B2E4C6285DF4040B30254&' +
-            'username=mateopubli27@gmail.com_atlascar&' + 
-            'password=Kepler.168ZwqqU3YYWnEmc4iYeCD7WbO';
+        String mockResponse = '';
         
         Test.setMock(HttpCalloutMock.class, new MK_Catalogo(mockResponse));
         
